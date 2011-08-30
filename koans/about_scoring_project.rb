@@ -28,9 +28,46 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 # More scoring examples are given in the tests below:
 #
 # Your goal is to write the score method.
+def remove_3_times (dice, number)
+   c=0
+   new_dice = []
+   dice.each do |i|
+       if i != number or c >= 3
+         new_dice << i
+       else
+         c+=1
+       end
+
+   end
+  new_dice
+end
 
 def score(dice)
-  # You need to write this method
+  #dice.public_methods.each {|m| p m}
+  result = 0
+  # * A set of three ones is 1000 points
+  if dice.select {|x| x == 1}.size >=3
+    result+=1000
+     dice = remove_3_times(dice, 1)
+  end
+
+# * A set of three numbers (other than ones) is worth 100 times the
+#   number. (e.g. three fives is 500 points).
+  (2..9).each do |i|
+    if dice.select {|x| x == i}.size >=3
+      result+=i*100
+      dice = remove_3_times(dice, i)
+    end
+  end
+
+#
+# * A one (that is not part of a set of three) is worth 100 points.
+#
+# * A five (that is not part of a set of three) is worth 50 points.
+  dice.select {|x| x == 1}.each {result += 100}
+  dice.select {|x| x == 5}.each {result += 50}
+
+  result
 end
 
 class AboutScoringProject < EdgeCase::Koan
@@ -68,6 +105,7 @@ class AboutScoringProject < EdgeCase::Koan
 
   def test_score_of_mixed_is_sum
     assert_equal 250, score([2,5,2,2,3])
+
     assert_equal 550, score([5,5,5,5])
   end
 
