@@ -1,0 +1,5 @@
+<% messages = Message.find(:all, :limit => 5,
+                           :order => "#{Message.table_name}.created_on DESC",
+                           :conditions => "#{Board.table_name}.project_id in (#{User.current.projects.collect{|m| m.id}.join(',')})",
+                           :include => [:author, :board]) %>
+<%= render :file => "messages/message_box", :locals => {:messages =>messages} %>
