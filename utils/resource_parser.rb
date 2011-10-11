@@ -2,8 +2,13 @@ require 'rubygems'
 require 'nokogiri'
 require 'resx_template'
 
+ROOT_DIR = 'c:/Andrew/IBA/GDYR/MESPOD/SVN_HG/MESPOD/'
+TO_TRANSLATE_CSV =  'MessagesToTranslate.csv'
+TRANSLATED_CSV = 'TranslatedMessages.csv'
+TO_TRANSLATE_CSV_MERGED = 'MessagesToTranslate_merged.csv'
+
 def resources_to_csv
-  Dir::chdir('c:/Andrew/IBA/GDYR/MESPOD/SVN_HG/MESPOD/')
+  Dir::chdir(ROOT_DIR)
   hash = Hash.new()
 
   Dir['**/*.resx'].each do |f_name|
@@ -22,7 +27,7 @@ def resources_to_csv
     end
   end
 
-  File.open("MessagesToTranslate.csv", "w") do |f|
+  File.open(TO_TRANSLATE_CSV, "w") do |f|
     hash.each_pair do |f_name, val|
       val.each do |(name, value)|
         f.write("#{f_name};#{name};#{value}\n")
@@ -34,8 +39,8 @@ end
 def csv_to_resources
   hash = Hash.new()
 
-  root =  'c:/Andrew/IBA/GDYR/MESPOD/SVN_HG/MESPOD/'
-  File.open("c:/Andrew/IBA/GDYR/MESPOD/TranslatedMessages.csv") do |f|
+  Dir::chdir(ROOT_DIR)
+  File.open(TRANSLATED_CSV) do |f|
     while (line = f.gets)
       (res_f, mess_id, _, trans) = line.split(/;/)
 
@@ -45,7 +50,7 @@ def csv_to_resources
   end
 
   hash.each_pair do |key, val|
-    resx_file = root + key.sub(/resx/, "sl.resx")
+    resx_file = key.sub(/resx/, "sl.resx")
     File.open(resx_file, "w") do |f|
       f.write(ResxTemplate::Start)
       val.each do | (mess_id, trans)|
@@ -58,7 +63,8 @@ end
 
 def append_translation
   hash_by_msg = Hash.new
-  File.open("c:/Andrew/IBA/GDYR/MESPOD/TranslatedMessages.csv") do |f|
+    Dir::chdir(ROOT_DIR)
+  File.open(TRANSLATED_CSV) do |f|
     while (line = f.gets)
       (res_f, msg_id, msg, trans) = line.split(/;/)
       id = res_f + msg_id
@@ -67,8 +73,8 @@ def append_translation
     end
   end
 
-  File.open("c:/Andrew/IBA/GDYR/MESPOD/MessagesToTranslate.csv") do |fin|
-  File.open("c:/Andrew/IBA/GDYR/MESPOD/MessagesToTranslate_merged.csv", "w") do |fout|
+  File.open(TO_TRANSLATE_CSV) do |fin|
+  File.open(TO_TRANSLATE_CSV_MERGED, "w") do |fout|
      while (line = fin.gets)
        line.sub!(/\n/,"")
        (res_f, msg_id, msg) = line.split(/;/)
@@ -81,8 +87,8 @@ def append_translation
   end
   end
 end
-append_translation
-#resources_to_csv
+#append_translation
+resources_to_csv
 #csv_to_resources
 
 
