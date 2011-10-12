@@ -23,7 +23,7 @@ def resources_to_csv
         value = node.children()[1].inner_text
 
         def_lang_list[f_name] = [] if not def_lang_list.has_key?(f_name)
-        def_lang_list[f_name].push([name, value])  if (name.end_with?("Caption", "Text"))or f_name.end_with?("UserMessage.resx", "Resources.resx")
+        def_lang_list[f_name].push([name, value])  if (name.end_with?("Caption", "Text")) or f_name.end_with?("UserMessage.resx", "Resources.resx")
       end
     end
   end
@@ -47,7 +47,7 @@ def resources_to_csv
         value = node.children()[1].inner_text
 
         other_lang_list[def_lang_f_name + "|" + name] = {} if not def_lang_list.has_key?(def_lang_f_name + "|" + name)
-        other_lang_list[def_lang_f_name + "|" + name][lang] = value  if (name.end_with?("Caption", "Text"))
+        other_lang_list[def_lang_f_name + "|" + name][lang] = value  if (name.end_with?("Caption", "Text")) or def_lang_f_name.end_with?("UserMessage.resx", "Resources.resx")
       end
     end
   end
