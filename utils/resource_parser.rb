@@ -113,7 +113,7 @@ def append_translation
     end
   end
 
-  File.open(TO_TRANSLATE_CSV) do |fin|
+   File.open(TO_TRANSLATE_CSV) do |fin|
   File.open(TO_TRANSLATE_CSV_MERGED, "w") do |fout|
      while (line = fin.gets)
        line.sub!(/\n/,"")
